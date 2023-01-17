@@ -10,39 +10,52 @@
 
 void R_GPT1_Create(void)
 {
-    volatile unsigned long dummy;
 	//DI();
 	__asm volatile ("cpsid i"); /* Disable IRQ interrupt (Set CPSR.I bit to 1)  */
 	  __asm volatile ("isb");
 
-    /* Cancel MTU stop state in LPC */
-    dummy=1u;
-
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
-    R_BSP_MODULE_START(FSP_IP_GPT, dummy);
-    dummy = BSP_MSTP_REG_FSP_IP_GPT(dummy);
+    R_BSP_MODULE_START(FSP_IP_GPT, 1);
+//    dummy = BSP_MSTP_REG_FSP_IP_GPT(dummy);
 //    dummy = R_MTU5->TSTR;   /* Dummy-read for the module-stop state(2) */
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
-	
-	
+
+	/* Initialize all registers that may affect operation of this driver to reset values.  Skip these since they
+	* affect all channels, and are initialized in GTCR and GTCNT: GTSTR, GTSTP, GTCLR. GTCR is set immediately after
+	* clearing the module stop bit to ensure the timer is stopped before proceeding with configuration. */
+	R_GPT1->GTWP  = 0xA500;
+	R_GPT1->GTCR  = 0U;
+	R_GPT1->GTST  = 0U;
+	R_GPT1->GTCNT = 0U;
+
+	R_GPT1->GTSSR   = 0x80000000U;
+    R_GPT1->GTPSR   = 0x80000000U;
+    R_GPT1->GTCSR   = 0x80000000U;
+    R_GPT1->GTICASR = 0;
+    R_GPT1->GTICBSR = 0;
+
 	R_GPT1->GTCR_b.CST = 0;
 
 	R_GPT1->GTCR_b.MD = 0x05;//triangle-wave PWM mode 2
 	R_GPT1->GTCR_b.TPCS = 0x00;//
-	R_GPT1->GTPR = 0x2000;//period
+	R_GPT1->GTPR = 0x3000;//period
+	R_GPT1->GTPBR = 0x3000;//period buffer
+	
 	R_GPT1->GTCNT = 0x00;//CNT Clear;
 	//IO configue
-	R_GPT1->GTIOR_b.GTIOA = 0x01;//initial low, low output at GTCCRA compare match
-	R_GPT1->GTIOR_b.GTIOB = 0x02;//initial low, high output at GTCCRB compare match
+	R_GPT1->GTIOR_b.GTIOA = 0x03;//initial low, low output at GTCCRA compare match
+	R_GPT1->GTIOR_b.GTIOB = 0x03;//initial low, high output at GTCCRB compare match
 	R_GPT1->GTIOR_b.OAE = 1;//GPTIOC0A output enable
 	R_GPT1->GTIOR_b.OBE = 1;//GPTIOC0B output enable
 	//ADD
-	R_GPT1->GTIOR_b.OADF = 2;//GPTIOC0A output enable
-	R_GPT1->GTIOR_b.OBDF = 2;//GPTIOC0B output enable
+	R_GPT1->GTIOR_b.OADF = 0;//
+	R_GPT1->GTIOR_b.OBDF = 0;//
 
 	//Buffer operation
 	R_GPT1->GTBER_b.CCRA = 1;//single buffer operation(GTCCRA <--> GTCCRC)
 	R_GPT1->GTBER_b.CCRB = 1;//single buffer operation(GTCCRB <--> GTCCRE)
+	
+//	R_GPT1->GTBER_b.PR = 1;//single buffer operation(GTPBR <--> GTPR)
 	
 	//Compare match value
 	R_GPT1->GTCCRA = 0x1000;
@@ -51,8 +64,7 @@ void R_GPT1_Create(void)
 	R_GPT1->GTCCRE = 0x1000;
 
 //ADD
-	R_GPT1->GTUDDTYC =  R_GPT1->GTUDDTYC | 3U;
-    R_GPT1->GTUDDTYC = R_GPT1->GTUDDTYC | 1U;
+    R_GPT1->GTUDDTYC =  1U;
 	
 	R_GPT1->GTCR_b.CST = 1;
 	
