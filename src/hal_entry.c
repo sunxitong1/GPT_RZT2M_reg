@@ -3,7 +3,6 @@
 #include "GPT_int.h"
 
 FSP_CPP_HEADER void R_BSP_WarmStart(bsp_warm_start_event_t event) BSP_PLACE_IN_SECTION(".warm_start");
-FSP_CPP_FOOTER volatile uint32_t debugdata = 0;
 
 
 /******************************************************************************************************************
@@ -20,23 +19,10 @@ void hal_entry(void)
 	//GPT Unit 0 Module Release
 	* ((unsigned long *) 0x80280308) &= 0xFFFFFFFBu;
 
-
-	R_GPT1_Create();
-	GPT1_IO_int();
-
+	R_GPT123_IO_int();
+	R_GPT123_Create();
 	while (1)
 	{
-		if (debugdata == 2)
-		{
-		    debugdata = 0;
-			R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) | (0x40));
-		}
-		else if (debugdata == 3)
-		{
-		    debugdata = 0;
-			R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) & (0xBF));
-		}
-
 		__NOP();
 	}
 

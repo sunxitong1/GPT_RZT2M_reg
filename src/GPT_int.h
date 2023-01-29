@@ -7,8 +7,8 @@
 #ifndef GPT_INT_H_
 #define GPT_INT_H_
 
-void R_GPT1_Create(void);
-void GPT1_IO_int(void);
+void R_GPT123_Create(void);
+void R_GPT123_IO_int(void);
 
 
 #endif
