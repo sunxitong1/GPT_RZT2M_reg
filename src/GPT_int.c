@@ -36,14 +36,14 @@ void R_GPT123_Create(void)
 	R_GPT1->GTCR_b.CST = 0;		//Count operation is stopped
 
 	R_GPT1->GTCR_b.MD = 0x05;	//triangle-wave PWM mode 2
-	R_GPT1->GTCR_b.TPCS = 0x00;	//Core Clock/1
-	R_GPT1->GTPR = 0x3000;		//period
-	R_GPT1->GTPBR = 0x3000;		//period buffer
+	R_GPT1->GTCR_b.TPCS = 0x00;	//Core Clock/1---GPT clock 400M
+	R_GPT1->GTPR = 0x30D4;		//period---16K
+	R_GPT1->GTPBR = 0x30D4;		//period buffer
 	
 	R_GPT1->GTCNT = 0x00;		//CNT Clear;
 	//IO function configuration
 	R_GPT1->GTIOR_b.GTIOA = 0x03;//initial low,  Output toggled at GTCCRA/GTCCRB compare match
-	R_GPT1->GTIOR_b.GTIOB = 0x03;//initial low,  Output toggled at GTCCRA/GTCCRB compare match
+	R_GPT1->GTIOR_b.GTIOB = 0x13;//initial high,  Output toggled at GTCCRA/GTCCRB compare match
 	R_GPT1->GTIOR_b.OAE = 1;	//GPTIOC0A output enable
 	R_GPT1->GTIOR_b.OBE = 1;	//GPTIOC0B output enable
 
@@ -52,11 +52,19 @@ void R_GPT123_Create(void)
 	R_GPT1->GTBER_b.CCRB = 1;	//single buffer operation(GTCCRB <--> GTCCRE)
 		
 	//Compare match value
-	R_GPT1->GTCCRA = 0x1000;
-	R_GPT1->GTCCRC = 0x1000;
-	R_GPT1->GTCCRB = 0x1000;
-	R_GPT1->GTCCRE = 0x1000;
-
+	R_GPT1->GTCCRA = 0x500;
+	R_GPT1->GTCCRC = 0x500;
+	R_GPT1->GTCCRB = 0x500;
+	R_GPT1->GTCCRE = 0x500;
+	
+	//Dead time setting
+	R_GPT1->GTDTCR_b.TDE = 1; 	// GTDVU and GTDVD registers are used to set the compare match value for
+								//negative-phase waveform with dead time automatically in GTCCRB registe
+	R_GPT1->GTDTCR_b.TDBUE = 0;	// GTDVU register buffer operation is disabled
+	R_GPT1->GTDTCR_b.TDBDE = 0;	//GTDVD register buffer operation is disabled
+	R_GPT1->GTDTCR_b.TDFER = 1;	//The value written to GTDVU register is automatically set to GTDVD register
+	R_GPT1->GTDVU = 0x320;		//dead time 2us
+	
 //GPT2 congiguratin for phase V
 	R_GPT2->GTWP  = 0xA500;
 	R_GPT2->GTCR  = 0U;
@@ -72,14 +80,14 @@ void R_GPT123_Create(void)
 	R_GPT2->GTCR_b.CST = 0;		//Count operation is stopped
 
 	R_GPT2->GTCR_b.MD = 0x05;	//triangle-wave PWM mode 2
-	R_GPT2->GTCR_b.TPCS = 0x00;	//Core Clock/1
-	R_GPT2->GTPR = 0x3000;		//period
-	R_GPT2->GTPBR = 0x3000;		//period buffer
+	R_GPT2->GTCR_b.TPCS = 0x00;	//Core Clock/1//// GPT clock 400M
+	R_GPT2->GTPR = 0x30D4;		//period--16K
+	R_GPT2->GTPBR = 0x30D4;		//period buffer
 	
 	R_GPT2->GTCNT = 0x00;		//CNT Clear;
 	//IO function configuration
 	R_GPT2->GTIOR_b.GTIOA = 0x03;	//initial low,  Output toggled at GTCCRA/GTCCRB compare match
-	R_GPT2->GTIOR_b.GTIOB = 0x03;	//initial low,  Output toggled at GTCCRA/GTCCRB compare match
+	R_GPT2->GTIOR_b.GTIOB = 0x13;	//initial high,  Output toggled at GTCCRA/GTCCRB compare match
 	R_GPT2->GTIOR_b.OAE = 1;		//GPTIOC0A output enable
 	R_GPT2->GTIOR_b.OBE = 1;		//GPTIOC0B output enable
 
@@ -92,6 +100,14 @@ void R_GPT123_Create(void)
 	R_GPT2->GTCCRC = 0x1000;
 	R_GPT2->GTCCRB = 0x1000;
 	R_GPT2->GTCCRE = 0x1000;
+		
+	//Dead time setting
+	R_GPT2->GTDTCR_b.TDE = 1;	// GTDVU and GTDVD registers are used to set the compare match value for
+								//negative-phase waveform with dead time automatically in GTCCRB registe
+	R_GPT2->GTDTCR_b.TDBUE = 0; // GTDVU register buffer operation is disabled
+	R_GPT2->GTDTCR_b.TDBDE = 0; //GTDVD register buffer operation is disabled
+	R_GPT2->GTDTCR_b.TDFER = 1; //The value written to GTDVU register is automatically set to GTDVD register
+	R_GPT2->GTDVU = 0x320;		//dead time 2us
 
 //GPT3 congiguratin for phase W
 	R_GPT3->GTWP  = 0xA500;
@@ -109,13 +125,13 @@ void R_GPT123_Create(void)
 
 	R_GPT3->GTCR_b.MD = 0x05;	//triangle-wave PWM mode 2
 	R_GPT3->GTCR_b.TPCS = 0x00;	//Core Clock/1
-	R_GPT3->GTPR = 0x3000;		//period
-	R_GPT3->GTPBR = 0x3000;		//period buffer
+	R_GPT3->GTPR = 0x30D4;		//period
+	R_GPT3->GTPBR = 0x30D4;		//period buffer
 	
 	R_GPT3->GTCNT = 0x00;		//CNT Clear;
 	//IO function configuration
 	R_GPT3->GTIOR_b.GTIOA = 0x03;//initial low,  Output toggled at GTCCRA/GTCCRB compare match
-	R_GPT3->GTIOR_b.GTIOB = 0x03;//initial low,  Output toggled at GTCCRA/GTCCRB compare match
+	R_GPT3->GTIOR_b.GTIOB = 0x13;//initial high,  Output toggled at GTCCRA/GTCCRB compare match
 	R_GPT3->GTIOR_b.OAE = 1;	//GPTIOC0A output enable
 	R_GPT3->GTIOR_b.OBE = 1;	//GPTIOC0B output enable
 
@@ -124,11 +140,18 @@ void R_GPT123_Create(void)
 	R_GPT3->GTBER_b.CCRB = 1;	//single buffer operation(GTCCRB <--> GTCCRE)
 		
 	//Compare match value
-	R_GPT3->GTCCRA = 0x1000;
-	R_GPT3->GTCCRC = 0x1000;
-	R_GPT3->GTCCRB = 0x1000;
-	R_GPT3->GTCCRE = 0x1000;
-	
+	R_GPT3->GTCCRA = 0x1500;
+	R_GPT3->GTCCRC = 0x1500;
+	R_GPT3->GTCCRB = 0x1500;
+	R_GPT3->GTCCRE = 0x1500;
+
+	//Dead time setting
+	R_GPT3->GTDTCR_b.TDE = 1; 	// GTDVU and GTDVD registers are used to set the compare match value for
+								//negative-phase waveform with dead time automatically in GTCCRB registe
+	R_GPT3->GTDTCR_b.TDBUE = 0;	// GTDVU register buffer operation is disabled
+	R_GPT3->GTDTCR_b.TDBDE = 0;	//GTDVD register buffer operation is disabled
+	R_GPT3->GTDTCR_b.TDFER = 1;	//The value written to GTDVU register is automatically set to GTDVD register
+	R_GPT3->GTDVU = 0x320;		//dead time 2us
 
 	//Start timer
 	R_GPT1->GTCR_b.CST = 1;
