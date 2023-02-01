@@ -126,9 +126,9 @@ void update_pwm(t_motor *pm)
         _w = pm->out_w * (float)pm->pwm_period;
         
         /* Update PWM timers */
-        *pm->mapPhaseU = (unsigned short)(pm->pwm_period_half - (short)_u);
-        *pm->mapPhaseV = (unsigned short)(pm->pwm_period_half - (short)_v);
-        *pm->mapPhaseW = (unsigned short)(pm->pwm_period_half - (short)_w);
+//        *pm->mapPhaseU = (unsigned short)(pm->pwm_period_half - (short)_u);
+//        *pm->mapPhaseV = (unsigned short)(pm->pwm_period_half - (short)_v);
+//        *pm->mapPhaseW = (unsigned short)(pm->pwm_period_half - (short)_w);
     }
 //    else
 //    {

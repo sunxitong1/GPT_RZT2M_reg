@@ -9,6 +9,8 @@
 
 void R_GPT123_Create(void);
 void R_GPT123_IO_int(void);
+void gpt_counter_overflow_isr(void);
+		
 
 #define PWM_CMP_UPDATE_MACRO(t1_cmp,t2_cmp,t3_cmp)	\
 		R_GPT1->GTCCRC = t1_cmp;					\
