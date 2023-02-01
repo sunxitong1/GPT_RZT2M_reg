@@ -10,6 +10,13 @@
 void R_GPT123_Create(void);
 void R_GPT123_IO_int(void);
 
+#define PWM_CMP_UPDATE_MACRO(t1_cmp,t2_cmp,t3_cmp)	\
+		R_GPT1->GTCCRC = t1_cmp;					\
+		R_GPT1->GTCCRE = t1_cmp;					\
+		R_GPT2->GTCCRC = t2_cmp;					\
+		R_GPT2->GTCCRE = t2_cmp;					\
+		R_GPT3->GTCCRC = t3_cmp;					\
+		R_GPT3->GTCCRE = t3_cmp;						
 
 #endif
 
