@@ -4,13 +4,17 @@
 #include "bsp_api.h"
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (1)
+#define VECTOR_DATA_IRQ_COUNT    (2)
 #endif
 /* ISR prototypes */
 void gpt_counter_overflow_isr(void);
+void gpt_counter_underflow_isr(void);
+
 
 /* Vector table allocations */
 #define VECTOR_NUMBER_GPT1_OVF ((IRQn_Type) 131) /* GPT1_OVF (GPT1 GTCNT overflow (GTPR compare match)) */
+#define VECTOR_NUMBER_GPT1_UDF ((IRQn_Type) 132) /* GPT1_UDF (GPT1 GTCNT underflow) */
+
 
 typedef enum IRQn
 {
@@ -38,6 +42,7 @@ typedef enum IRQn
     VirtualTimerInt = -5,
     NonSecurePhysicalTimerInt = -2,
     GPT1_OVF_IRQn = 131, /* GPT1_OVF (GPT1 GTCNT overflow (GTPR compare match)) */
+    GPT1_UDF_IRQn = 132, /* GPT1_OVF (GPT1 GTCNT overflow (GTPR compare match)) */
     SHARED_PERIPHERAL_INTERRUPTS_MAX_ENTRIES = BSP_VECTOR_TABLE_MAX_ENTRIES
 } IRQn_Type;
 #endif /* VECTOR_DATA_H */

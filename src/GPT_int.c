@@ -13,6 +13,7 @@
 #include "vector_data.h"
 
 #define GPT1_OVERFLOW_PRIORITY_LEVEL (10) /* The lower the value, the higher the priority of the corresponding interrupt(0-31) */
+#define GPT1_UNDERFLOW_PRIORITY_LEVEL (11)
 
 volatile short test = 0;
 
@@ -168,11 +169,15 @@ void R_GPT123_Create(void)
 	R_GPT3->GTDVU = 0x320;							//dead time 2us
 
 	//interrupt enable
-	R_GPT1->GTINTAD_b.GTINTPR = 1;
+	R_GPT1->GTINTAD_b.GTINTPR = 3;
 	/* Configure the interrupts */
 	R_BSP_IrqDisable(VECTOR_NUMBER_GPT1_OVF);
 	R_BSP_IrqCfg(VECTOR_NUMBER_GPT1_OVF, GPT1_OVERFLOW_PRIORITY_LEVEL, (NULL));
 	R_BSP_IrqEnable(VECTOR_NUMBER_GPT1_OVF);
+
+	R_BSP_IrqDisable(VECTOR_NUMBER_GPT1_UDF);
+	R_BSP_IrqCfg(VECTOR_NUMBER_GPT1_UDF, GPT1_UNDERFLOW_PRIORITY_LEVEL, (NULL));
+	R_BSP_IrqEnable(VECTOR_NUMBER_GPT1_UDF);
 
 	//Start timer
 	R_GPT1->GTCR_b.CST = 1;
@@ -209,6 +214,9 @@ void R_GPT123_IO_int(void)
 	R_PORT_SR->PMC_b[18].PMC3 = 1;					//GPIOC3B<-->P18-3
 	R_PORT_SR->PFC_b[18].PFC3 = 0x03;				//GPIOC3B<-->P18-3
 
+	//test IO
+	R_PORT_SR->PM[19] = (uint16_t) ((R_PORT_SR->PM[19]) | 0x3000);//P19-6 输出数据输入到输入缓冲器
+
 	R_BSP_PinAccessDisable();						// Lock Register Write Protection
 
 
@@ -217,11 +225,17 @@ void R_GPT123_IO_int(void)
 
 void gpt_counter_overflow_isr(void)
 {
-	test++;
-
-	if(test > 100)
-		test = 0;
+	R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) | (0x40));
+//	__NOP();
 }
+
+void gpt_counter_underflow_isr(void)
+{
+//	__NOP();
+	R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) & (0xBF));
+
+}
+
 
 
 
