@@ -27,19 +27,21 @@ void hal_entry(void)
 	R_GPT123_IO_int();
 	R_GPT123_Create();
 
+	foc_int();
+
 	while(1)
 	{
 
-		if(test_data == 3)
-		{
-			test_data = 0;
-			PWM_CMP_UPDATE_MACRO(0x1000, 0x1000, 0x1000);
-		}
-		else if(test_data == 2)
-		{
-			test_data = 0;
-			PWM_CMP_UPDATE_MACRO(0x2000, 0x2000, 0x2000);
-		}
+//		if(test_data == 3)
+//		{
+//			test_data = 0;
+//			PWM_CMP_UPDATE_MACRO(0x1000, 0x1000, 0x1000);
+//		}
+//		else if(test_data == 2)
+//		{
+//			test_data = 0;
+//			PWM_CMP_UPDATE_MACRO(0x2000, 0x2000, 0x2000);
+//		}
 
 
 		__NOP();

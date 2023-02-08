@@ -7,6 +7,8 @@
 #ifndef GPT_INT_H_
 #define GPT_INT_H_
 
+#define MAIN_ISR_PERIOD 0x30D4 //period---16K ...GPT clock 400M
+
 void R_GPT123_Create(void);
 void R_GPT123_IO_int(void);
 void gpt_counter_overflow_isr(void);

@@ -271,7 +271,8 @@ typedef struct motor {
     short           phase_vector;        
     short           phase_corr;             /* Phase angle correction for factional encoder counts per electrocal cycle */
     short           phase_corr_cntr;    
-    unsigned short  PhaseU, PhaseV, PhaseW; /* Phase PWM Output */
+	short 			PhaseU, PhaseV, PhaseW; /* Phase PWM Output */
+    unsigned short  PhaseU_Reg, PhaseV_Reg, PhaseW_Reg; /* Phase PWM reg value set */
 
     short           pwm_period;
     short           pwm_period_half;
@@ -296,9 +297,6 @@ typedef struct motor {
     unsigned short  *regPosCapture;
     unsigned char   *regTimerStatus;
     
-    unsigned short  *mapPhaseU;
-    unsigned short  *mapPhaseV;
-    unsigned short  *mapPhaseW;
     
     unsigned short  *regPhaseU;
     unsigned short  *regPhaseV;
@@ -343,6 +341,7 @@ void foc_int(void);
 void commutate_foc(t_motor *pm);
 void commutate_svm(t_motor *pm, float alpha, float beta); 
 void update_pwm(t_motor *pm);
+void theta_calculate(t_motor * pm);
 
 
 

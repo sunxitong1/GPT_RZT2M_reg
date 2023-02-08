@@ -11,11 +11,10 @@
 #include "GPT_int.h"
 #include "hal_data.h"
 #include "vector_data.h"
+#include "Foc.h"
 
 #define GPT1_OVERFLOW_PRIORITY_LEVEL (10) /* The lower the value, the higher the priority of the corresponding interrupt(0-31) */
 #define GPT1_UNDERFLOW_PRIORITY_LEVEL (11)
-
-volatile short test = 0;
 
 
 void R_GPT123_Create(void)
@@ -46,8 +45,8 @@ void R_GPT123_Create(void)
 
 	R_GPT1->GTCR_b.MD = 0x05;						//triangle-wave PWM mode 2
 	R_GPT1->GTCR_b.TPCS = 0x00; 					//Core Clock/1---GPT clock 400M
-	R_GPT1->GTPR = 0x30D4;							//period---16K
-	R_GPT1->GTPBR = 0x30D4; 						//period buffer
+	R_GPT1->GTPR = MAIN_ISR_PERIOD;					//period---16K
+	R_GPT1->GTPBR = MAIN_ISR_PERIOD; 				//period buffer
 
 	R_GPT1->GTCNT = 0x00;							//CNT Clear;
 
@@ -219,7 +218,8 @@ void R_GPT123_IO_int(void)
 
 void gpt_counter_overflow_isr(void)
 {
-	R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) | (0x40));
+//	R_PORT_SR->P[19] = (uint8_t) ((R_PORT_SR->P[19]) | (0x40));
+	commutate_foc(&motor_1);
 //	__NOP();
 }
 
