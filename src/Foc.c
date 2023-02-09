@@ -145,10 +145,10 @@ void update_pwm(t_motor * pm)
 
 	if(pm->simulated_mode != 0)
 		return;
-
-	pm->out_u = (float) (0.2);
-	pm->out_v = (float) (0.2);
-	pm->out_w = (float) (0.2);
+//
+//	pm->out_u = (float) (0.2);
+//	pm->out_v = (float) (0.2);
+//	pm->out_w = (float) (0.2);
 
 	//	  if (pm->charge_state == BS_CHARGE_END)
 	{
