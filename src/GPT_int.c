@@ -174,10 +174,8 @@ void R_GPT123_Create(void)
 	R_BSP_IrqCfg(VECTOR_NUMBER_GPT1_OVF, GPT1_OVERFLOW_PRIORITY_LEVEL, (NULL));
 	R_BSP_IrqEnable(VECTOR_NUMBER_GPT1_OVF);
 
-	//Start timer
-	R_GPT1->GTCR_b.CST = 1;
-	R_GPT2->GTCR_b.CST = 1;
-	R_GPT3->GTCR_b.CST = 1;
+	//Start timer  GPT1/GPT2/GPT3 simultaneously
+	R_GPT1->GTSTR = 0x0E;
 
 	__asm volatile("cpsie i");
 	__asm volatile("isb");
