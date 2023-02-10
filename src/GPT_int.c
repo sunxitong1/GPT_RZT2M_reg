@@ -154,9 +154,7 @@ void R_GPT123_Create(void)
 	R_GPT3->GTDVU = 0x320;		//dead time 2us
 
 	//Start timer
-	R_GPT1->GTCR_b.CST = 1;
-	R_GPT2->GTCR_b.CST = 1;
-	R_GPT3->GTCR_b.CST = 1;
+	R_GPT1->GTSTR = 0x0E;		//Start GPT1/GPT2/GPT3 simultaneously
 
 	__asm volatile ("cpsie i");
 	__asm volatile ("isb");
