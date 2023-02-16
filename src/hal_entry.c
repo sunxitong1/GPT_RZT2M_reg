@@ -1,6 +1,7 @@
 
 #include "hal_data.h"
 #include "GPT_int.h"
+#include "POEG_reg.h"
 
 FSP_CPP_HEADER void R_BSP_WarmStart(bsp_warm_start_event_t event) BSP_PLACE_IN_SECTION(".warm_start");
 
@@ -15,11 +16,14 @@ FSP_CPP_HEADER void R_BSP_WarmStart(bsp_warm_start_event_t event) BSP_PLACE_IN_S
 void hal_entry(void)
 {
 	/* TODO: add your own code here */
-	//MSTPCRC register Bit1 Clear
+	//MSTPCRD register Bit1 Clear
 	//GPT Unit 0 Module Release
-	* ((unsigned long *) 0x80280308) &= 0xFFFFFFFBu;
+	* ((unsigned long *) 0x80280308) &= 0xFFFFFFF9u;
 
 	R_GPT123_IO_int();
+	R_POEG_IO_int();
+	
+	R_POEG_Create();
 	R_GPT123_Create();
 	while (1)
 	{
