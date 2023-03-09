@@ -20,7 +20,9 @@ void hal_entry(void)
 	* ((unsigned long *) 0x80280308) &= 0xFFFFFFFBu;
 
 	R_GPT123_IO_int();
-	R_GPT123_Create();
+//	R_GPT123_Create_Complementary_mode();
+	R_GPT1_Create_Sawtooth_mode();
+
 	while (1)
 	{
 		__NOP();
